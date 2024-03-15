@@ -1,17 +1,17 @@
 public class Ship {
     private final int length;
-    private int[] coordinates;
+    private Coordinate[] coordinates;
 
     public Ship(int length) {
         this.length = length;
-        this.coordinates = new int[length];
+        this.coordinates = new Coordinate[length];
     }
 
-    public void setCoordinates(int[] coordinates) {
+    public void setCoordinates(Coordinate[] coordinates) {
         this.coordinates = coordinates;
     }
 
-    public void setCoordinate(int index, int coordinate) {
+    public void setCoordinate(int index, Coordinate coordinate) {
         this.coordinates[index] = coordinate;
     }
 
@@ -19,7 +19,9 @@ public class Ship {
         return length;
     }
 
-    public int[] getCoordinates() {
+    public Coordinate[] getCoordinates() {
         return coordinates;
     }
+
+
 }
