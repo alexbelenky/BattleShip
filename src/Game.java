@@ -10,4 +10,7 @@ public class Game {
         this.computerShips = new ArrayList<>();
     }
 
+    public void play() {
+        Board.setBoardUI();
+    }
 }
