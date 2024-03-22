@@ -13,4 +13,8 @@ public class Game {
     public void play() {
         Board.setBoardUI();
     }
+
+    public void game() {
+
+    }
 }

@@ -4,6 +4,7 @@ public class Board {
     public static void setBoardUI() {
         setTargetBoardUI();
         setPlayerBoardUI();
+        askShips();
     }
 
     //sets a 10 x 10 grid of green as places to target opponent ships
@@ -12,7 +13,7 @@ public class Board {
         for (int row = 0; row < 11; row++) {
             for (int col = 0; col < 11; col++) {
                     if (col == 0) {
-                        System.out.print((String.valueOf((char)(row + 65)) + " "));
+                        System.out.print((((char)(row + 65)) + " "));
                     }  else {
                         System.out.print(UI.getGreenSquare());
                     }
@@ -28,7 +29,7 @@ public class Board {
         for (int row = 0; row < 11; row++) {
             for (int col = 0; col < 11; col++) {
                     if (col == 0) {
-                        System.out.print((String.valueOf((char)(row + 65)) + " "));
+                        System.out.print((((char)(row + 65)) + " "));
                     } else {
                         System.out.print(UI.getBlueSquare());
                     }
@@ -42,5 +43,12 @@ public class Board {
             System.out.print(UI.getBlackSquare());
         }
         System.out.println();
+    }
+
+    private static void askShips() {
+        String carrier = UI.askQuestion("Where will you put your carrier? ");
+        String battleship = UI.askQuestion("Where will you put your battleship? ");
+        String destroyer1 = UI.askQuestion("Where will you put your first destroyer? ");
+        String destroyer2 = UI.askQuestion("Where will you put your second destroyer? ");
     }
 }

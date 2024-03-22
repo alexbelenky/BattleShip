@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class UI {
     private static final String COLOR_BLUE = "\u001B[34m";
     private static final String COLOR_RED = "\u001B[31m";
@@ -31,5 +33,11 @@ public class UI {
 
     public static String getBlackSquare() {
         return COLOR_BLACK + SOLID_SQUARE + COLOR_RESET;
+    }
+
+    public static String askQuestion(String ques) {
+        System.out.println(ques);
+        Scanner scan = new Scanner(System.in);
+        return scan.nextLine();
     }
 }
