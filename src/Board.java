@@ -1,36 +1,36 @@
 public class Board {
     private static PlayerShips playerShips;
     private static OpponentShips opponentShips;
+    private static boolean[][] attackedOpponent;
     private Board() { }
 
     public static void setBoardUI() {
         opponentShips = new OpponentShips();
-        setTargetBoardUI(true, false);
+        setTargetBoardUI(true, false, 0, 0);
         setPlayerBoardUI(true);
         askShips();
-        setTargetBoardUI(true, false);
+        setTargetBoardUI(true, false, 0, 0);
         setPlayerBoardUI(false);
         attack();
 //        test();
     }
 
     //sets a 10 x 10 grid of green as places to target opponent ships
-    private static void setTargetBoardUI(boolean start, boolean hit) {
+    private static void setTargetBoardUI(boolean start, boolean hit, int firstCord, int secondCord) {
         System.out.println("  12345678910");
         for (int row = 0; row < 10; row++) {
             System.out.print((char) (row + 'A') + " ");
             for (int col = 0; col < 10; col++) {
                 if (!start) {
-                    if (hit) {
-                        // Place red block if hit is true
-                        System.out.print(UI.getRedSquare());
+                    if (hit && (row == firstCord - 'A' && col == secondCord - 1)) {
+                        System.out.print(UI.getRedSquare());  // Print red square for a hit
+                    } else if (!hit && (row == firstCord - 'A' && col == secondCord - 1)) {
+                        System.out.print(UI.getWhiteSquare());  // Print white square for a miss
                     } else {
-                        // Place white block if hit is false
-                        System.out.print(UI.getWhiteSquare());
+                        System.out.print(UI.getGreenSquare());  // Print green square for other cells
                     }
                 } else {
-                    // Place green block if neither hit nor start
-                    System.out.print(UI.getGreenSquare());
+                    System.out.print(UI.getGreenSquare());  // Always print green squares in setup mode
                 }
             }
             System.out.println();
@@ -104,8 +104,8 @@ public class Board {
         playerShips = new PlayerShips(playerCarrier, playerBattleship, playerCruiser, playerSubmarine, playerDestroyer);
     }
 
-    private static void putShips(boolean hit) {
-        setTargetBoardUI(false, hit);
+    private static void putShips(boolean hit, int firstCord, int secondCord) {
+        setTargetBoardUI(false, hit, firstCord, secondCord);
         setPlayerBoardUI(false);
     }
 
@@ -116,10 +116,10 @@ public class Board {
         int secondCord = attack.charAt(1);
         if (opponentShips.attacked(firstCord, secondCord)) {
             System.out.println("Hit!");
-            putShips(true);
+            putShips(true, firstCord, secondCord);
         } else {
             System.out.println("Miss!");
-            putShips(false);
+            putShips(false, firstCord, secondCord);
         }
     }
 

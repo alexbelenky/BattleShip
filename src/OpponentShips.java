@@ -61,4 +61,8 @@ public class OpponentShips {
     public OpponentShip[] getShips() {
         return ships;
     }
+
+    public boolean allShipsSunk() {
+        return false;
+    }
 }
