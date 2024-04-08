@@ -31,23 +31,29 @@ public class Board {
         for (int row = 0; row < 10; row++) {
             System.out.print((char) (row + 'A') + " ");
             for (int col = 0; col < 10; col++) {
-                if (!(start)) {
-                    PlayerShip carrier = playerShips.getShips()[0];
-                    PlayerShip battleship = playerShips.getShips()[1];
-                    PlayerShip cruiser = playerShips.getShips()[2];
-                    PlayerShip submarine = playerShips.getShips()[3];
-                    PlayerShip destroyer = playerShips.getShips()[4];
-                    if (
-                        carrier.getFirstCoordinate() - 1 == row && ((carrier.getSecondCoordinate() + carrier.getLength() - 1 > col) && (carrier.getSecondCoordinate() < col + 2)) ||
-                        battleship.getFirstCoordinate() - 1 == row && ((battleship.getSecondCoordinate() + battleship.getLength() - 1 > col) && (battleship.getSecondCoordinate() < col + 2)) ||
-                        cruiser.getFirstCoordinate() - 1 == row && ((cruiser.getSecondCoordinate() + cruiser.getLength() - 1 > col) && (cruiser.getSecondCoordinate() < col + 2)) ||
-                        submarine.getFirstCoordinate() - 1 == row && ((submarine.getSecondCoordinate() + submarine.getLength() - 1 > col) && (submarine.getSecondCoordinate() < col + 2)) ||
-                        destroyer.getFirstCoordinate() - 1 == row && ((destroyer.getSecondCoordinate() + destroyer.getLength() - 1 > col) && (destroyer.getSecondCoordinate() < col + 2))
-                    ) {
-                        System.out.print(UI.getGraySquare());
-                    } else {
-                        System.out.print(UI.getBlueSquare());
+                boolean isShipCell = false;
+                if (!start) {
+                    for (PlayerShip ship : playerShips.getShips()) {
+                        int shipStartRow = ship.getFirstCoordinate() - 1;
+                        int shipStartCol = ship.getSecondCoordinate() - 1;
+                        int shipEndRow = shipStartRow + (ship.isVertical() ? ship.getLength() - 1 : 0);
+                        int shipEndCol = shipStartCol + (!ship.isVertical() ? ship.getLength() - 1 : 0);
+
+                        if (ship.isVertical()) {
+                            if (col == shipStartCol && row >= shipStartRow && row <= shipEndRow) {
+                                isShipCell = true;
+                                break;
+                            }
+                        } else {
+                            if (row == shipStartRow && col >= shipStartCol && col <= shipEndCol) {
+                                isShipCell = true;
+                                break;
+                            }
+                        }
                     }
+                }
+                if (!start && isShipCell) {
+                    System.out.print(UI.getGraySquare());
                 } else {
                     System.out.print(UI.getBlueSquare());
                 }
@@ -66,16 +72,21 @@ public class Board {
 
     private static void askShips() {
         String carrier = UI.askQuestion("Where will you put your carrier? "); //size of 5
+        boolean carrierD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String battleship = UI.askQuestion("Where will you put your battleship? "); //size of 4
+        boolean battleshipD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String cruiser = UI.askQuestion("Where will you put your cruiser? "); //size of 3
+        boolean cruiserD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String submarine = UI.askQuestion("Where will you put your submarine? "); //size of 3
+        boolean submarineD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String destroyer = UI.askQuestion("Where will you put your destroyer? "); //size of 3
+        boolean destroyerD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
 
-        PlayerShip playerCarrier = new PlayerShip(5, new Coordinate(carrier.substring(0, 1), Integer.parseInt(carrier.substring(1))));
-        PlayerShip playerBattleship = new PlayerShip(4, new Coordinate(battleship.substring(0, 1), Integer.parseInt(battleship.substring(1))));
-        PlayerShip playerCruiser = new PlayerShip(3, new Coordinate(cruiser.substring(0, 1), Integer.parseInt(cruiser.substring(1))));
-        PlayerShip playerSubmarine = new PlayerShip(3, new Coordinate(submarine.substring(0, 1), Integer.parseInt(submarine.substring(1))));
-        PlayerShip playerDestroyer = new PlayerShip(2, new Coordinate(destroyer.substring(0, 1), Integer.parseInt(destroyer.substring(1))));
+        PlayerShip playerCarrier = new PlayerShip(5, new Coordinate(carrier.substring(0, 1), Integer.parseInt(carrier.substring(1))), carrierD);
+        PlayerShip playerBattleship = new PlayerShip(4, new Coordinate(battleship.substring(0, 1), Integer.parseInt(battleship.substring(1))), battleshipD);
+        PlayerShip playerCruiser = new PlayerShip(3, new Coordinate(cruiser.substring(0, 1), Integer.parseInt(cruiser.substring(1))), cruiserD);
+        PlayerShip playerSubmarine = new PlayerShip(3, new Coordinate(submarine.substring(0, 1), Integer.parseInt(submarine.substring(1))), submarineD);
+        PlayerShip playerDestroyer = new PlayerShip(2, new Coordinate(destroyer.substring(0, 1), Integer.parseInt(destroyer.substring(1))), destroyerD);
         playerShips = new PlayerShips(playerCarrier, playerBattleship, playerCruiser, playerSubmarine, playerDestroyer);
     }
 

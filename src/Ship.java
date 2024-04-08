@@ -1,10 +1,12 @@
 public class Ship {
     private final int length;
     private Coordinate coordinates;
+    private boolean vertical; //true for vertical, false for horizontal
 
-    public Ship(int length, Coordinate coordinates) {
+    public Ship(int length, Coordinate coordinates, boolean vertical) {
         this.length = length;
         this.coordinates = coordinates;
+        this.vertical = vertical;
     }
 
     public void setCoordinate(int index, Coordinate coordinate) {
@@ -25,5 +27,9 @@ public class Ship {
 
     public int getSecondCoordinate() {
         return coordinates.getSecondCoordinate();
+    }
+
+    public boolean isVertical() {
+        return vertical;
     }
 }

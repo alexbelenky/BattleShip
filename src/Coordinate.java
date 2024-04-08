@@ -3,7 +3,7 @@ public class Coordinate {
     int secondCoordinate;
 
     public Coordinate(String firstCoordinate, int secondCoordinate) {
-        this.firstCoordinate = firstCoordinate;
+        this.firstCoordinate = firstCoordinate.toUpperCase();
         this.secondCoordinate = secondCoordinate;
     }
 
