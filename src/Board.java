@@ -3,10 +3,11 @@ public class Board {
     private Board() { }
 
     public static void setBoardUI() {
-        setTargetBoardUI();
-        setPlayerBoardUI(true);
-        askShips();
-        putShips();
+//        setTargetBoardUI();
+//        setPlayerBoardUI(true);
+//        askShips();
+//        putShips();
+        test();
     }
 
     //sets a 10 x 10 grid of green as places to target opponent ships
@@ -91,6 +92,14 @@ public class Board {
     }
 
     private static void putShips() {
+        setTargetBoardUI();
         setPlayerBoardUI(false);
+    }
+
+    private static void test() {
+        OpponentShips a = new OpponentShips();
+        for (OpponentShip ship : a.getShips()) {
+            System.out.println(ship.getCoordinates());
+        }
     }
 }
