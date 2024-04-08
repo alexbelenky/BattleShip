@@ -1,17 +1,21 @@
 public class Board {
     private static PlayerShips playerShips;
     private static OpponentShips opponentShips;
-    private static boolean[][] attackedOpponent;
+    private static int[][] attackedOpponent; //0 for nothing, 1 for hit, 2 for miss
+    private static int[][] attackedPlayer; //0 for nothing, 1 for hit
     private Board() { }
 
     public static void setBoardUI() {
         opponentShips = new OpponentShips();
+        initializeSet();
         setTargetBoardUI(true, false, 0, 0);
         setPlayerBoardUI(true);
         askShips();
         setTargetBoardUI(true, false, 0, 0);
         setPlayerBoardUI(false);
-        attack();
+        while (!(opponentShips.allShipsSunk())) {
+            attack();
+        }
 //        test();
     }
 
@@ -22,10 +26,10 @@ public class Board {
             System.out.print((char) (row + 'A') + " ");
             for (int col = 0; col < 10; col++) {
                 if (!start) {
-                    if (hit && (row == firstCord - 'A' && col == secondCord - 1)) {
-                        System.out.print(UI.getRedSquare());  // Print red square for a hit
-                    } else if (!hit && (row == firstCord - 'A' && col == secondCord - 1)) {
+                    if (attackedOpponent[row][col] == 2) {
                         System.out.print(UI.getWhiteSquare());  // Print white square for a miss
+                    } else if (attackedOpponent[row][col] == 1) {
+                        System.out.print(UI.getRedSquare());  // Print red square for a hit
                     } else {
                         System.out.print(UI.getGreenSquare());  // Print green square for other cells
                     }
@@ -86,15 +90,15 @@ public class Board {
 
     private static void askShips() {
         String carrier = UI.askQuestion("Where will you put your carrier? "); //size of 5
-        boolean carrierD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
+        boolean carrierD = "v".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal? (v for vertical, h for horizontal"));
         String battleship = UI.askQuestion("Where will you put your battleship? "); //size of 4
-        boolean battleshipD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
+        boolean battleshipD = "v".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String cruiser = UI.askQuestion("Where will you put your cruiser? "); //size of 3
-        boolean cruiserD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
+        boolean cruiserD = "v".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String submarine = UI.askQuestion("Where will you put your submarine? "); //size of 3
-        boolean submarineD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
+        boolean submarineD = "v".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
         String destroyer = UI.askQuestion("Where will you put your destroyer? "); //size of 3
-        boolean destroyerD = "vertical".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
+        boolean destroyerD = "v".equalsIgnoreCase(UI.askQuestion("Vertical or horizontal?"));
 
         PlayerShip playerCarrier = new PlayerShip(5, new Coordinate(carrier.substring(0, 1), Integer.parseInt(carrier.substring(1))), carrierD);
         PlayerShip playerBattleship = new PlayerShip(4, new Coordinate(battleship.substring(0, 1), Integer.parseInt(battleship.substring(1))), battleshipD);
@@ -110,23 +114,44 @@ public class Board {
     }
 
     private static void attack() {
-        String attack = UI.askQuestion("What coordinate shall we attack?");
-        char firstCord = attack.charAt(0) ;
-        firstCord -= 'A' + 1;
-        int secondCord = attack.charAt(1);
-        if (opponentShips.attacked(firstCord, secondCord)) {
-            System.out.println("Hit!");
-            putShips(true, firstCord, secondCord);
-        } else {
-            System.out.println("Miss!");
-            putShips(false, firstCord, secondCord);
+        try {
+            String attack = UI.askQuestion("What coordinate shall we attack?");
+            int firstCord = attack.charAt(0);
+            firstCord -= 'A' - 1;
+            int secondCord = Integer.parseInt(attack.substring(1));
+            if (opponentShips.attacked(firstCord, secondCord)) {
+                System.out.println("Hit!");
+                attackedOpponent[firstCord - 1][secondCord - 1] = 1;
+                putShips(true, firstCord, secondCord);
+            } else {
+                System.out.println("Miss!");
+                attackedOpponent[firstCord - 1][secondCord - 1] = 2;
+                putShips(false, firstCord, secondCord);
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid coordinate! Try again!");
+            attack();
+        }
+    }
+
+    private static void initializeSet() {
+        attackedOpponent = new int[10][10];
+        attackedPlayer = new int[10][10];
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                attackedOpponent[row][col] = 0;
+                attackedPlayer[row][col] = 0;
+            }
         }
     }
 
 //    private static void test() {
-//        OpponentShips a = new OpponentShips();
-//        for (OpponentShip ship : a.getShips()) {
-//            System.out.println(ship.getCoordinates());
+//        initializeSet();
+//        for (int[] ints : attackedOpponent) {
+//            for (int anInt : ints) {
+//                System.out.print(anInt);
+//            }
+//            System.out.println();
 //        }
 //    }
 }

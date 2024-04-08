@@ -2,11 +2,12 @@ import java.util.Random;
 
 public class OpponentShips {
     private static OpponentShip[] ships;
-    private static boolean[][] areShips;
     private static int hits;
+    private static boolean allSunk;
     public OpponentShips() {
         ships = new OpponentShip[5];
         hits = 0;
+        allSunk = false;
         setOpponentShips();
     }
 
@@ -48,7 +49,7 @@ public class OpponentShips {
             if (ship.isPresent(firstCord, secondCord)) {
                 hits++;
                 if (hits >= 17) {
-                    //win
+                    allSunk = true;
                     break;
                 } else {
                     return true;
@@ -63,6 +64,6 @@ public class OpponentShips {
     }
 
     public boolean allShipsSunk() {
-        return false;
+        return allSunk;
     }
 }
