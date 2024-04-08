@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Board {
     private static PlayerShips playerShips;
     private static OpponentShips opponentShips;
@@ -141,7 +143,21 @@ public class Board {
     }
 
     private static void attacked() {
+        int firstCord = 0;
+        int secondCord = 0;
+        boolean valid = false;
+        while (!valid) {
+            firstCord = new Random().nextInt(10) + 1;
+            secondCord = new Random().nextInt(10);
 
+        }
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                if (attackedPlayer[row][col] == 0) {
+//                    if ()
+                }
+            }
+        }
     }
 
     private static void initializeSet() {
