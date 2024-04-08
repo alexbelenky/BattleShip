@@ -1,27 +1,29 @@
 public class Ship {
     private final int length;
-    private Coordinate[] coordinates;
+    private Coordinate coordinates;
 
-    public Ship(int length) {
+    public Ship(int length, Coordinate coordinates) {
         this.length = length;
-        this.coordinates = new Coordinate[length];
-    }
-
-    public void setCoordinates(Coordinate[] coordinates) {
         this.coordinates = coordinates;
     }
 
     public void setCoordinate(int index, Coordinate coordinate) {
-        this.coordinates[index] = coordinate;
+        this.coordinates = coordinate;
     }
 
     public int getLength() {
         return length;
     }
 
-    public Coordinate[] getCoordinates() {
+    public Coordinate getCoordinates() {
         return coordinates;
     }
 
+    public int getFirstCoordinate() {
+        return coordinates.getFirstCoordinateI();
+    }
 
+    public int getSecondCoordinate() {
+        return coordinates.getSecondCoordinate();
+    }
 }

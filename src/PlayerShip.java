@@ -1,5 +1,5 @@
 public class PlayerShip extends Ship{
-    public PlayerShip(int length) {
-        super(length);
+    public PlayerShip(int length, Coordinate coordinate) {
+        super(length, coordinate);
     }
 }
