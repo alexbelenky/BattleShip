@@ -32,4 +32,21 @@ public class Ship {
     public boolean isVertical() {
         return vertical;
     }
+
+    public boolean isPresent(int firstCord, int secondCord) {
+        if (vertical) {
+            for (int i = 0; i < getLength(); i++) {
+                if (firstCord == getFirstCoordinate() + i && secondCord == getSecondCoordinate()) {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < getLength(); i++) {
+                if (firstCord == getFirstCoordinate() && secondCord == getSecondCoordinate() + i) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

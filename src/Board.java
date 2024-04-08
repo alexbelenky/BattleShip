@@ -1,30 +1,43 @@
 public class Board {
     private static PlayerShips playerShips;
+    private static OpponentShips opponentShips;
     private Board() { }
 
     public static void setBoardUI() {
-//        setTargetBoardUI();
-//        setPlayerBoardUI(true);
-//        askShips();
-//        putShips();
-        test();
+        opponentShips = new OpponentShips();
+        setTargetBoardUI(true, false);
+        setPlayerBoardUI(true);
+        askShips();
+        setTargetBoardUI(true, false);
+        setPlayerBoardUI(false);
+        attack();
+//        test();
     }
 
     //sets a 10 x 10 grid of green as places to target opponent ships
-    private static void setTargetBoardUI() {
+    private static void setTargetBoardUI(boolean start, boolean hit) {
         System.out.println("  12345678910");
-        for (int row = 0; row < 11; row++) {
-            for (int col = 0; col < 11; col++) {
-                    if (col == 0) {
-                        System.out.print((((char)(row + 65)) + " "));
-                    }  else {
-                        System.out.print(UI.getGreenSquare());
+        for (int row = 0; row < 10; row++) {
+            System.out.print((char) (row + 'A') + " ");
+            for (int col = 0; col < 10; col++) {
+                if (!start) {
+                    if (hit) {
+                        // Place red block if hit is true
+                        System.out.print(UI.getRedSquare());
+                    } else {
+                        // Place white block if hit is false
+                        System.out.print(UI.getWhiteSquare());
                     }
+                } else {
+                    // Place green block if neither hit nor start
+                    System.out.print(UI.getGreenSquare());
                 }
-            System.out.println();
             }
-        setBlackBar();
+            System.out.println();
         }
+        System.out.println();
+        setBlackBar();
+    }
 
     //sets a 10 x 10 grid of the blue sea and grey blocks as ships
     private static void setPlayerBoardUI(boolean start) {
@@ -91,15 +104,29 @@ public class Board {
         playerShips = new PlayerShips(playerCarrier, playerBattleship, playerCruiser, playerSubmarine, playerDestroyer);
     }
 
-    private static void putShips() {
-        setTargetBoardUI();
+    private static void putShips(boolean hit) {
+        setTargetBoardUI(false, hit);
         setPlayerBoardUI(false);
     }
 
-    private static void test() {
-        OpponentShips a = new OpponentShips();
-        for (OpponentShip ship : a.getShips()) {
-            System.out.println(ship.getCoordinates());
+    private static void attack() {
+        String attack = UI.askQuestion("What coordinate shall we attack?");
+        char firstCord = attack.charAt(0) ;
+        firstCord -= 'A' + 1;
+        int secondCord = attack.charAt(1);
+        if (opponentShips.attacked(firstCord, secondCord)) {
+            System.out.println("Hit!");
+            putShips(true);
+        } else {
+            System.out.println("Miss!");
+            putShips(false);
         }
     }
+
+//    private static void test() {
+//        OpponentShips a = new OpponentShips();
+//        for (OpponentShip ship : a.getShips()) {
+//            System.out.println(ship.getCoordinates());
+//        }
+//    }
 }

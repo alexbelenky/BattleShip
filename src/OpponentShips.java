@@ -1,10 +1,12 @@
 import java.util.Random;
-import java.util.ArrayList;
 
 public class OpponentShips {
-    private OpponentShip[] ships;
+    private static OpponentShip[] ships;
+    private static boolean[][] areShips;
+    private static int hits;
     public OpponentShips() {
         ships = new OpponentShip[5];
+        hits = 0;
         setOpponentShips();
     }
 
@@ -39,6 +41,21 @@ public class OpponentShips {
                 }
             }
         }
+    }
+
+    public boolean attacked(int firstCord, int secondCord) {
+        for (OpponentShip ship : ships) {
+            if (ship.isPresent(firstCord, secondCord)) {
+                hits++;
+                if (hits >= 17) {
+                    //win
+                    break;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public OpponentShip[] getShips() {
