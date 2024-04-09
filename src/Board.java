@@ -4,7 +4,8 @@ public class Board {
     private static PlayerShips playerShips;
     private static OpponentShips opponentShips;
     private static int[][] attackedOpponent; //0 for nothing, 1 for hit, 2 for miss
-    private static int[][] attackedPlayer; //0 for nothing, 1 for hit
+    private static int[][] attackedPlayer; //0 for nothing, 1 for hit, 2 for ship, 3 for miss
+    private static int hits;
     private Board() { }
 
     public static void setBoardUI() {
@@ -17,6 +18,7 @@ public class Board {
         setPlayerBoardUI(false);
         while (!(opponentShips.allShipsSunk())) {
             attack();
+            attacked();
         }
         if (opponentShips.allShipsSunk()) {
             System.out.println("You win!");
@@ -56,29 +58,14 @@ public class Board {
         for (int row = 0; row < 10; row++) {
             System.out.print((char) (row + 'A') + " ");
             for (int col = 0; col < 10; col++) {
-                boolean isShipCell = false;
                 if (!start) {
-                    for (PlayerShip ship : playerShips.getShips()) {
-                        int shipStartRow = ship.getFirstCoordinate() - 1;
-                        int shipStartCol = ship.getSecondCoordinate() - 1;
-                        int shipEndRow = shipStartRow + (ship.isVertical() ? ship.getLength() - 1 : 0);
-                        int shipEndCol = shipStartCol + (!ship.isVertical() ? ship.getLength() - 1 : 0);
-
-                        if (ship.isVertical()) {
-                            if (col == shipStartCol && row >= shipStartRow && row <= shipEndRow) {
-                                isShipCell = true;
-                                break;
-                            }
-                        } else {
-                            if (row == shipStartRow && col >= shipStartCol && col <= shipEndCol) {
-                                isShipCell = true;
-                                break;
-                            }
-                        }
+                    if (attackedPlayer[row][col] == 2) {
+                        System.out.print(UI.getGraySquare());  // Print grey square for boat
+                    } else if (attackedPlayer[row][col] == 1) {
+                        System.out.print(UI.getRedSquare());  // Print red square for a hit
+                    } else {
+                        System.out.print(UI.getBlueSquare());  // Print blue  square for sea
                     }
-                }
-                if (!start && isShipCell) {
-                    System.out.print(UI.getGraySquare());
                 } else {
                     System.out.print(UI.getBlueSquare());
                 }
@@ -113,6 +100,20 @@ public class Board {
         PlayerShip playerSubmarine = new PlayerShip(3, new Coordinate(submarine.substring(0, 1), Integer.parseInt(submarine.substring(1))), submarineD);
         PlayerShip playerDestroyer = new PlayerShip(2, new Coordinate(destroyer.substring(0, 1), Integer.parseInt(destroyer.substring(1))), destroyerD);
         playerShips = new PlayerShips(playerCarrier, playerBattleship, playerCruiser, playerSubmarine, playerDestroyer);
+        for (PlayerShip ship : playerShips.getShips()) {
+            int firstCord = ship.getFirstCoordinate();
+            int secondCord = ship.getSecondCoordinate();
+
+            if (ship.isVertical()) {
+                for (int i = 0; i < ship.getLength(); i++) {
+                    attackedPlayer[firstCord - 1 + i][secondCord - 1] = 2;
+                }
+            } else {
+                for (int i = 0; i < ship.getLength(); i++) {
+                    attackedPlayer[firstCord - 1 ][secondCord - 1 + i] = 2;
+                }
+            }
+        }
     }
 
     private static void putShips(boolean hit, int firstCord, int secondCord) {
@@ -127,7 +128,7 @@ public class Board {
             firstCord -= 'A' - 1;
             int secondCord = Integer.parseInt(attack.substring(1));
             if (opponentShips.attacked(firstCord, secondCord)) {
-                System.out.println("Hit!");
+                System.out.println("Hit!\nYou go again!");
                 attackedOpponent[firstCord - 1][secondCord - 1] = 1;
                 putShips(true, firstCord, secondCord);
                 attack();
@@ -147,15 +148,27 @@ public class Board {
         int secondCord = 0;
         boolean valid = false;
         while (!valid) {
-            firstCord = new Random().nextInt(10) + 1;
+            firstCord = new Random().nextInt(10);
             secondCord = new Random().nextInt(10);
-
+            if (attackedPlayer[firstCord][secondCord] != 1 && attackedPlayer[firstCord][secondCord] != 3) {
+                valid = true;
+            }
         }
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                if (attackedPlayer[row][col] == 0) {
-//                    if ()
-                }
+        System.out.printf("Opponent attacks %s%s\n",(char) (firstCord + 'A') , secondCord + 1);
+        if (attackedPlayer[firstCord][secondCord] == 0) {
+            System.out.println("Opponent has missed!");
+            attackedPlayer[firstCord][secondCord] = 3;
+            setPlayerBoardUI(false);
+        } else {
+            System.out.println("Opponent has hit!");
+            attackedPlayer[firstCord][secondCord] = 1;
+            hits++;
+            if (hits >= 17) {
+                System.out.println("You lose!");
+            } else {
+                System.out.println("Opponent goes again!");
+                setPlayerBoardUI(false);
+                attacked();
             }
         }
     }
